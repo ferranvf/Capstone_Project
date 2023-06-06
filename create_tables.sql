@@ -1,14 +1,15 @@
 create table CourseCatalog (
   course_catalog_id integer primary key,
   college text,
-  departement text,
+  department text,
   style text,
   course_level integer,
   course_number integer,
   course_name text,
   course_description text, 
   number_credits integer,
-  requisits text
+  requisits text,
+  degree_id integer
 );
 
 create table Course (
@@ -17,7 +18,7 @@ create table Course (
   CRN integer,
   year_ integer,
   semester text,
-  intructorID integer
+  instructorID integer
 );
 
 create table Topics (
@@ -37,6 +38,12 @@ create table LearningObjectives (
   lo_source text,
   lo_references text,
   prerequisits text
-)
+);
 
-
+create table Degrees (
+	degree_id integer primary key,
+    degree_name text,
+    degree_type text,
+    degree_description text,
+    TotalCredits integer
+);

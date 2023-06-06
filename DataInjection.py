@@ -2,8 +2,8 @@ import pandas as pd
 import mysql.connector
 import numpy as np
 
-psw = open("/home/ferran/OneDrive/Ordinador/Computational Data Science/Fall 2022/Principles of Data Management/contrasenya",r)
-cnx = mysql.connector.connect(user='root', password=psw,
+psw = open("/home/ferran/OneDrive/Ordinador/Computational Data Science/Fall 2022/Principles of Data Management/contrasenya","r")
+cnx = mysql.connector.connect(user='root', password="Mynewpassword1*",
                               host='127.0.0.1',
                               database='CapstoneProject')
 
@@ -20,16 +20,18 @@ topics=pd.read_excel("CourseSchema.xlsx", sheet_name="Topics")
 topics=topics.replace(np.nan, None)
 learning_objectives=pd.read_excel("CourseSchema.xlsx", sheet_name="LearningObjectives")
 learning_objectives = learning_objectives.replace(np.nan, None)
+degrees = pd.read_excel("CourseSchema.xlsx", sheet_name="DegreeTrack")
+degrees = degrees.replace(np.nan, None)
 
 
 #insert course_catalog data to sql tables
 for index, row in course_catalog.iterrows():
-    cursor.execute("INSERT INTO CourseCatalog (course_catalog_id,college,departement,style,course_level,course_number,course_name,course_description,number_credits,requisits) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
-                   (row.CourseCatalogID, row.College, row.Department, row.Style, row.CourseLevel, row.CourseNumber, row.CourseName, row.CourseDescription, row.NumberCredits, row.Prerequisites))
+    cursor.execute("INSERT INTO CourseCatalog (course_catalog_id,college,department,style,course_level,course_number,course_name,course_description,number_credits,requisits,degree_id) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
+                   (row.CourseCatalogID, row.College, row.Department, row.Style, row.CourseLevel, row.CourseNumber, row.CourseName, row.CourseDescription, row.NumberCredits, row.Prerequisites, row.DegreeId))
 
 #insert course data to sql tables
 for index, row in course.iterrows():
-    cursor.execute("INSERT INTO Course (course_id,course_number,CRN,year_,semester,intructorID) values(%s,%s,%s,%s,%s,%s)", \
+    cursor.execute("INSERT INTO Course (course_id,course_number,CRN,year_,semester,instructorID) values(%s,%s,%s,%s,%s,%s)", \
                    (row.course_id, row.course_number, row.CRN, row.year_, row.semester, row.instructorID))
 
 #insert topics data to sql tables
@@ -41,6 +43,11 @@ for index, row in topics.iterrows():
 for index, row in learning_objectives.iterrows():
     cursor.execute("INSERT INTO LearningObjectives (learning_objective_id,shortdescription,longdescription,topic_id,lo_source,lo_references,prerequisits) values(%s,%s,%s,%s,%s,%s,%s)", \
                    (row.LearningObjectiveID, row.ShortName, row.LongDescription, row.TopicsID, row.Source, row.Reference, row.Prerequisites))
+
+#insert Degrees data to sql tables
+for index, row in degrees.iterrows():
+    cursor.execute("INSERT INTO Degrees (degree_id,degree_name,degree_type,degree_description, TotalCredits) values(%s,%s,%s,%s, %s)", \
+                   (row.ID, row.Name, row.Degree, row.Description, row.TotalCredits))
 
 cnx.commit()
 cursor.close()
