@@ -1,0 +1,22 @@
+
+
+
+class CourseCatalog(object):
+
+    def __init__(self, course_catalog_id, college = 'CST', department = 'CIS', style = 'LECTURE', type = 'Electives'):
+        self.course_catalog_id = course_catalog_id
+        self.college = college
+        self.department department
+        self.style = style
+        self.type = type
+
+
+    def load_from_db(self):
+        '''
+        '''
+        pass
+
+
+class Course(object):
+
+    def __init__(self, course_number, CRN, 
