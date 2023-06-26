@@ -1,7 +1,6 @@
 import pandas as pd
 import mysql.connector
 import numpy as np
-from itertools import combinations, groupby
 
 
 
@@ -23,10 +22,29 @@ def create_data(degree, cnx):
     
     restrictions = pd.read_sql(q, cnx)
     df = courses.merge(restrictions, on='restriction_id', how='left')
-    
     df = df.replace({np.nan: "No restrictions"})
     return df
 
+def create_data2(degree,cnx):
+    query = ("select * from CourseCatalog where degree_id = {}").format(degree['degree_id'].values[0])
+    courses = pd.read_sql(query, cnx)
+    courses['degree'] = [degree['degree_name'].values[0]]*courses.shape[0]
+    
+    if len(courses['course_catalog_id']) ==1:
+        q = "select * from Topics where course_id in ({})".format(courses['course_catalog_id'].values[0])
+    elif len(courses['course_catalog_id']) > 1:
+        q = "select * from Topics where course_id in {}".format(tuple(courses['course_catalog_id'].values))
+    topics = pd.read_sql(q, cnx)
+    topics_id = topics['topic_id'].unique()
+    if len(topics_id) ==1:
+        q = "select * from LearningObjectives where topic_id in ({})".format(topics_id[0])
+    elif len(topics_id) > 1:
+        q = "select * from LearningObjectives where topic_id in {}".format(tuple(topics_id))
+    
+    learningobjectives = pd.read_sql(q,cnx)
+    
+    learningobjectives =  learningobjectives.merge(topics, on='topic_id')
+    return(learningobjectives.merge(courses, left_on='course_id', right_on='course_catalog_id'))
 
 def connect_database():
     cnx = mysql.connector.connect(user='root', password="Mynewpassword1*",
@@ -34,9 +52,3 @@ def connect_database():
                               database='CapstoneProject')
     
     return cnx
-
-# if __name__=='__main__':
-#     cnx = connect_database()
-#     degree = get_data("Computer Science", cnx)
-#     # degree = get_data("Computational Data Science", cnx)
-#     create_data(degree, cnx)
