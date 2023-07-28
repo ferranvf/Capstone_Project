@@ -4,6 +4,7 @@ from dash import Dash, html, dcc, callback, Output, Input
 import mysql.connector
 import numpy as np
 from obtain_data import *
+import sys
 
 
 
@@ -65,6 +66,16 @@ def connect_database():
     
 if __name__ == '__main__':
     cnx = connect_database()
-    visualization_1(cnx)
-    # visualization_2("Computational Data Science", cnx)
-    app.run_server(debug=True)
+    
+    rerun = 1
+    while rerun == 1:
+        choice = int(input("Select which data visualization do you want to see: \n 1: Program courses. \n 2: Learning Objectives \n Your choice: "))
+        if choice == 1:
+            visualization_1(cnx)
+            app.run_server(debug=False)
+        elif choice == 2:
+            visualization_2("Computational Data Science", cnx)
+        else:
+            print("Wrong choice")
+        rerun = int(input("Do you want to visualize anything else? \n 1: Yes \n 2: No \n Your choice: "))
+    

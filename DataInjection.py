@@ -9,8 +9,6 @@ cnx = mysql.connector.connect(user='root', password="Mynewpassword1*",
 cursor=cnx.cursor()
 
 
-
-
 course_catalog = pd.read_excel("CourseSchema-ferran.xlsx", sheet_name="CourseCatalog")
 course_catalog = course_catalog.replace(np.nan, None)
 course=pd.read_excel("CourseSchema-ferran.xlsx", sheet_name="Course")
@@ -39,13 +37,13 @@ for index, row in course.iterrows():
 
 #insert topics data to sql tables
 for index, row in topics.iterrows():
-    cursor.execute("INSERT INTO Topics (topic_id,parent,topic_level,shortname,topic_description,course_id) values(%s,%s,%s,%s,%s,%s)", \
-                   (row.TopicsID, row.Parent, row.Level, row.ShortName, row.Description, row.course_id))
+    cursor.execute("INSERT INTO Topics (topic_id,source_topic, type_topic, parent,topic_level,shortname,topic_description,course_id) values(%s,%s,%s,%s,%s,%s,%s,%s)", \
+                   (row.TopicsID, row.Source, row.Type, row.Parent, row.Level, row.ShortName, row.Description, row.course_id))
 
 #insert LearningObjectives data to sql tables
 for index, row in learning_objectives.iterrows():
-    cursor.execute("INSERT INTO LearningObjectives (learning_objective_id,shortdescription,longdescription,topic_id,lo_source,lo_references,prerequisits) values(%s,%s,%s,%s,%s,%s,%s)", \
-                   (row.LearningObjectiveID, row.ShortName, row.LongDescription, row.TopicsID, row.Source, row.Reference, row.Prerequisites))
+    cursor.execute("INSERT INTO LearningObjectives (learning_objective_id,shortdescription,longdescription,topic_id,topic_level_name,notes,lo_source,lo_references,prerequisits) values(%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
+                   (row.LearningObjectiveID, row.ShortName,row.LongDescription, row.TopicsID, row.TopicLevelName, row.Notes, row.Source, row.Reference,row.Prerequisites))
 
 #insert Degrees data to sql tables
 for index, row in degrees.iterrows():
@@ -56,8 +54,8 @@ for index, row in degrees.iterrows():
 
 #insert CourseRestrictions data to sql tables
 for index, row in restrictions.iterrows():
-    cursor.execute("INSERT INTO CourseRestrictions (restriction_id,number_credits,parent_id) values(%s,%s,%s)", \
-                   (row.restriction_id, row.number_credits, row.parent_id))
+    cursor.execute("INSERT INTO CourseRestrictions (restriction_id,number_credits,parent_id, restriction_description, parent_description) values(%s,%s,%s,%s,%s)", \
+                   (row.restriction_id, row.number_credits, row.parent_id, row.description, row.parent_description))
 
 cnx.commit()
 cursor.close()
