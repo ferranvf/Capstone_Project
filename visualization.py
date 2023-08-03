@@ -45,7 +45,7 @@ def update_data(col_chosen):
 def visualization_2(degree,cnx):
     df = get_data(degree, cnx)
     df = create_data2(df, cnx)
-    fig = px.sunburst(df, path=['degree', 'course_name', 'longdescription'])
+    fig = px.sunburst(df, path=['degree','course_name', 'shortdescription','longdescription'])
     # set title
     fig.update_layout(title={
         'text': 'Learning Obejectives',
